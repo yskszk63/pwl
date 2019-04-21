@@ -33,7 +33,7 @@ jobs:
 
       - script: |
           cargo build --target=x86_64-unknown-linux-musl --release
-          cp target/x86_64-unknown-linux-musl/release/pwl
+          cp target/x86_64-unknown-linux-musl/release/pwl $(Build.ArtifactStagingDirectory)
         displayName: 'Build'
 
       - task: PublishBuildArtifacts@1
