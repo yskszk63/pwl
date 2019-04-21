@@ -22,7 +22,7 @@ jobs:
           sudo apt-get -qq install musl-tools
         displayName: 'Add musl target'
 
-      - script: cargo test -- -Z unstable-options --format json | cargo2junit > result.xml
+      - script: cargo test -- -Z unstable-options --format json | cargo2junit > results.xml
         displayName: 'Tests'
 
       - task: PublishTestResults@2
