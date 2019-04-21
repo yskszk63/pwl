@@ -25,7 +25,45 @@ jobs:
       - script: cargo test -- -Z unstable-options --format json | cargo2junit > result.xml
         displayName: 'Tests'
 
-      - script: cargo build --target=x86_64-unknown-linux-musl --release
+      - task: PublishTestResults@2
+        inputs:
+          testResultsFormat: 'JUnit'
+          testResultsFiles: 'results.xml'
+        condition: succeededOrFailed()
+
+      - script: |
+          cargo build --target=x86_64-unknown-linux-musl --release
+          cp target/x86_64-unknown-linux-musl/release/pwl
         displayName: 'Build'
+
+      - task: PublishBuildArtifacts@1
+        inputs:
+          artifactName: 'Linux'
+          pathtoPublish: $(Build.ArtifactStagingDirectory)
+
+  - job: Release
+    dependsOn:
+      Linux
+
+    steps:
+      - task: DownloadBuildArtifacts@0
+        inputs:
+          downloadType: 'specific'
+          itemPattern: '**'
+          downloadPath: $(Build.ArtifactStagingDirectory)
+
+      - script: ls $(Build.ArtifactStagingDirectory)
+
+      - task: GitHubRelease@0
+        inputs:
+          gitHubConnection: 'yskszk63'
+          repositoryName: 'yskszk63/pwl'
+          tagSource: 'auto'
+          assets: '$(Build.ArtifactStagingDirectory)/*/*'
+          assetUploadMode: 'replace'
+          isDraft: false
+          isPreRelease: false
+          addChangeLog: false
+        displayName: Release to GitHub
 
 # vim:set ts=2 sts=2 sw=2:
