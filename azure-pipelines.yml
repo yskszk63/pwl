@@ -19,7 +19,7 @@ jobs:
       - script: |
           cargo install cargo2junit
           rustup target add x86_64-unknown-linux-musl
-          sudo apt-get -qq install musl-tool
+          sudo apt-get -qq install musl-tools
         displayName: 'Add musl target'
 
       - script: cargo test -- -Z unstable-options --format json | cargo2junit > result.xml
