@@ -1,9 +1,8 @@
-use clap::{crate_name, crate_version, App, Arg, arg_enum, values_t_or_exit};
+use clap::{crate_name, crate_version, App, Arg, arg_enum, values_t_or_exit, value_t_or_exit};
 
 use crate::powerline::Powerline;
 use crate::segments::Segments;
 use crate::shell::Shell;
-use crate::theme::Theme;
 
 mod color;
 mod powerline;
@@ -21,6 +20,13 @@ arg_enum! {
         Git,
         Jobs,
         Root,
+    }
+}
+
+arg_enum! {
+    pub enum CliTheme {
+        Default,
+        SolarizedLight,
     }
 }
 
@@ -52,6 +58,12 @@ fn main() {
              .value_delimiter(",")
              .case_insensitive(true)
              .default_value(&x))
+        .arg(Arg::with_name("theme")
+             .short("t")
+             .possible_values(&CliTheme::variants())
+             .value_name("THEME")
+             .case_insensitive(true)
+             .default_value("default"))
         .get_matches();
 
     let rc = matches
@@ -59,7 +71,10 @@ fn main() {
         .map(|rc| rc.parse::<i32>().unwrap_or(-1));
     let segments = values_t_or_exit!(matches, "segments", CliSegments);
     let segments = segments.into_iter().map(move |s| s.into_segments()).collect::<Vec<_>>();
-    let theme = Theme::default();
+    let theme = match value_t_or_exit!(matches, "theme", CliTheme) {
+        CliTheme::Default => Default::default(),
+        CliTheme::SolarizedLight => theme::solarized_light(),
+    };
     let shell = Shell::Bash;
 
     let output = std::io::stdout();

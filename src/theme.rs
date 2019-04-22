@@ -166,3 +166,36 @@ impl Default for Theme {
         }
     }
 }
+
+pub fn solarized_light() -> Theme {
+    Theme {
+        username_fg: 15,
+        username_bg: 4,
+        username_root_bg: 1,
+
+        hostname_fg: 15,
+        hostname_bg: 10,
+
+        path_fg: 10,
+        path_bg: 7,
+        cwd_fg: 0,
+
+        repo_clean_fg: 0,
+        repo_clean_bg: 15,
+        repo_dirty_fg: 1,
+        repo_dirty_bg: 15,
+
+        jobs_fg: 4,
+        jobs_bg: 7,
+
+        cmd_passed_fg: 15,
+        cmd_passed_bg: 2,
+        cmd_failed_fg: 15,
+        cmd_failed_bg: 1,
+
+        virtualenv_fg: 15,
+        virtualenv_bg: 2,
+
+        ..Default::default()
+    }
+}
