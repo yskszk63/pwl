@@ -9,9 +9,7 @@ use crate::powerline::Powerline;
 
 type HeadInfo = (Option<Oid>, Option<Oid>, Option<String>);
 
-fn head_info(
-    git: &Repository,
-) -> std::result::Result<HeadInfo, &'static str> {
+fn head_info(git: &Repository) -> std::result::Result<HeadInfo, &'static str> {
     let branches = match git.branches(Some(BranchType::Local)) {
         Ok(branches) => branches,
         Err(_) => return Err("err"),

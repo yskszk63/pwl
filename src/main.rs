@@ -1,4 +1,4 @@
-use clap::{crate_name, crate_version, App, Arg, arg_enum, values_t_or_exit, value_t_or_exit};
+use clap::{arg_enum, crate_name, crate_version, value_t_or_exit, values_t_or_exit, App, Arg};
 
 use crate::powerline::Powerline;
 use crate::segments::Segments;
@@ -51,21 +51,25 @@ fn main() {
     let matches = App::new(crate_name!())
         .version(crate_version!())
         .arg(Arg::with_name("RC"))
-        .arg(Arg::with_name("segments")
-             .short("s")
-             .long("segments")
-             .possible_values(&CliSegments::variants())
-             .value_name("SEGMENTS")
-             .value_delimiter(",")
-             .case_insensitive(true)
-             .default_value(&x))
-        .arg(Arg::with_name("theme")
-             .short("t")
-             .long("theme")
-             .possible_values(&CliTheme::variants())
-             .value_name("THEME")
-             .case_insensitive(true)
-             .default_value("default"))
+        .arg(
+            Arg::with_name("segments")
+                .short("s")
+                .long("segments")
+                .possible_values(&CliSegments::variants())
+                .value_name("SEGMENTS")
+                .value_delimiter(",")
+                .case_insensitive(true)
+                .default_value(&x),
+        )
+        .arg(
+            Arg::with_name("theme")
+                .short("t")
+                .long("theme")
+                .possible_values(&CliTheme::variants())
+                .value_name("THEME")
+                .case_insensitive(true)
+                .default_value("default"),
+        )
         .arg(Arg::with_name("cwd-short").long("cwd-short"))
         .get_matches();
 
@@ -73,7 +77,10 @@ fn main() {
         .value_of("RC")
         .map(|rc| rc.parse::<i32>().unwrap_or(-1));
     let segments = values_t_or_exit!(matches, "segments", CliSegments);
-    let segments = segments.into_iter().map(CliSegments::into_segments).collect::<Vec<_>>();
+    let segments = segments
+        .into_iter()
+        .map(CliSegments::into_segments)
+        .collect::<Vec<_>>();
     let theme = match value_t_or_exit!(matches, "theme", CliTheme) {
         CliTheme::Default => Default::default(),
         CliTheme::SolarizedLight => theme::solarized_light(),
