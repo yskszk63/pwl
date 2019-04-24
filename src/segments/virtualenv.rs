@@ -22,7 +22,7 @@ pub fn write_virtualenv<'a, W: Write>(p: &mut Powerline<'a, W>) -> Result<()> {
             .or_else(|| var_os("CONDA_DEFAULT_ENV"))
             .map(|env| PathBuf::from(&env)),
     };
-    if let Some(env_name) = env.and_then(|env| env.file_name().map(|env| env.to_os_string())) {
+    if let Some(env_name) = env.and_then(|env| env.file_name().map(OsStr::to_os_string)) {
         let (fg, bg) = (Color::VirtualenvFg, Color::VirtualenvBg);
         p.add(Segment::new(&env_name.to_string_lossy(), fg, bg))
     } else {

@@ -73,7 +73,7 @@ fn main() {
         .value_of("RC")
         .map(|rc| rc.parse::<i32>().unwrap_or(-1));
     let segments = values_t_or_exit!(matches, "segments", CliSegments);
-    let segments = segments.into_iter().map(move |s| s.into_segments()).collect::<Vec<_>>();
+    let segments = segments.into_iter().map(CliSegments::into_segments).collect::<Vec<_>>();
     let theme = match value_t_or_exit!(matches, "theme", CliTheme) {
         CliTheme::Default => Default::default(),
         CliTheme::SolarizedLight => theme::solarized_light(),

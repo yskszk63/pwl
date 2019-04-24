@@ -1,4 +1,5 @@
 use std::io::{Result, Write};
+use std::string::ToString;
 
 use git2::{BranchType, ObjectType, Oid, Repository, Status, StatusOptions, StatusShow};
 
@@ -6,9 +7,11 @@ use super::Segment;
 use crate::color::Color;
 use crate::powerline::Powerline;
 
+type HeadInfo = (Option<Oid>, Option<Oid>, Option<String>);
+
 fn head_info(
     git: &Repository,
-) -> std::result::Result<(Option<Oid>, Option<Oid>, Option<String>), &'static str> {
+) -> std::result::Result<HeadInfo, &'static str> {
     let branches = match git.branches(Some(BranchType::Local)) {
         Ok(branches) => branches,
         Err(_) => return Err("err"),
@@ -20,7 +23,7 @@ fn head_info(
             let upstream = branch.upstream().ok().and_then(|b| b.get().target());
 
             if let Ok(name) = branch.name() {
-                return Ok((local, upstream, name.map(|s| s.to_string())));
+                return Ok((local, upstream, name.map(ToString::to_string)));
             }
         }
     }
@@ -31,7 +34,7 @@ fn head_info(
                 .find_object(target, Some(ObjectType::Any))
                 .ok()
                 .and_then(|o| o.short_id().ok())
-                .and_then(|b| b.as_str().map(|s| s.to_string()));
+                .and_then(|b| b.as_str().map(ToString::to_string));
             return Ok((None, None, name));
         }
     };
