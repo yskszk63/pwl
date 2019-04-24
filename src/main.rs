@@ -53,6 +53,7 @@ fn main() {
         .arg(Arg::with_name("RC"))
         .arg(Arg::with_name("segments")
              .short("s")
+             .long("segments")
              .possible_values(&CliSegments::variants())
              .value_name("SEGMENTS")
              .value_delimiter(",")
@@ -60,10 +61,12 @@ fn main() {
              .default_value(&x))
         .arg(Arg::with_name("theme")
              .short("t")
+             .long("theme")
              .possible_values(&CliTheme::variants())
              .value_name("THEME")
              .case_insensitive(true)
              .default_value("default"))
+        .arg(Arg::with_name("cwd-short").long("cwd-short"))
         .get_matches();
 
     let rc = matches
@@ -75,11 +78,12 @@ fn main() {
         CliTheme::Default => Default::default(),
         CliTheme::SolarizedLight => theme::solarized_light(),
     };
+    let cwd_short = matches.is_present("cwd-short");
     let shell = Shell::Bash;
 
     let output = std::io::stdout();
     let mut output = std::io::BufWriter::new(output.lock());
-    let mut pwl = Powerline::new(rc, theme, shell, &mut output);
+    let mut pwl = Powerline::new(rc, cwd_short, theme, shell, &mut output);
 
     pwl.draw(&segments).unwrap();
 }
