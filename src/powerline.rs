@@ -5,6 +5,12 @@ use crate::segments::{self as seg, Segment, Segments};
 use crate::shell::Shell;
 use crate::theme::Theme;
 
+pub trait SegmentTarget {
+    fn append(&mut self, segment: Segment) -> Result<()>;
+    fn shell(&self) -> &Shell;
+    fn last_exit_status(&self) -> &Option<i32>;
+}
+
 #[derive(Debug)]
 pub struct Powerline<'a, W: Write> {
     last_exit_status: Option<i32>,
@@ -79,12 +85,18 @@ impl<'a, W: Write> Powerline<'a, W> {
         self.last_color = Some((fg, bg));
         Ok(())
     }
+}
 
-    pub fn shell(&self) -> &Shell {
+impl<'a, W: Write> SegmentTarget for Powerline<'a, W> {
+    fn append(&mut self, segment: Segment) -> Result<()> {
+        self.add(segment)
+    }
+
+    fn shell(&self) -> &Shell {
         &self.shell
     }
 
-    pub fn last_exit_status(&self) -> &Option<i32> {
+    fn last_exit_status(&self) -> &Option<i32> {
         &self.last_exit_status
     }
 }

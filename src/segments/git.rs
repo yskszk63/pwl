@@ -1,11 +1,11 @@
-use std::io::{Result, Write};
+use std::io::Result;
 use std::string::ToString;
 
 use git2::{BranchType, ObjectType, Oid, Repository, Status, StatusOptions, StatusShow};
 
 use super::Segment;
 use crate::color::Color;
-use crate::powerline::Powerline;
+use crate::powerline::SegmentTarget;
 
 type HeadInfo = (Option<Oid>, Option<Oid>, Option<String>);
 
@@ -82,7 +82,7 @@ fn count_stage(git: &Repository) -> Option<(usize, usize, usize, usize)> {
     }
 }
 
-pub fn write_git<'a, W: Write>(p: &mut Powerline<'a, W>) -> Result<()> {
+pub fn write_git(p: &mut impl SegmentTarget) -> Result<()> {
     let git = match Repository::discover(".") {
         Ok(git) => git,
         Err(_) => return Ok(()),
@@ -110,17 +110,17 @@ pub fn write_git<'a, W: Write>(p: &mut Powerline<'a, W>) -> Result<()> {
         } else {
             (Color::RepoDirtyFg, Color::RepoDirtyBg)
         };
-        p.add(Segment::new(&branch_name, fg, bg))?;
+        p.append(Segment::new(&branch_name, fg, bg))?;
 
         if let (Some(local), Some(upstream)) = (local, upstream) {
             if let Ok((ahead, behind)) = git.graph_ahead_behind(local, upstream) {
                 if ahead > 0 {
                     let (fg, bg) = (Color::GitAheadFg, Color::GitAheadBg);
-                    p.add(Segment::new(&format!("{}\u{2B06}", ahead), fg, bg))?;
+                    p.append(Segment::new(&format!("{}\u{2B06}", ahead), fg, bg))?;
                 };
                 if behind > 0 {
                     let (fg, bg) = (Color::GitBehindFg, Color::GitBehindBg);
-                    p.add(Segment::new(&format!("{}\u{2B07}", behind), fg, bg))?;
+                    p.append(Segment::new(&format!("{}\u{2B07}", behind), fg, bg))?;
                 };
             }
         };
@@ -128,24 +128,24 @@ pub fn write_git<'a, W: Write>(p: &mut Powerline<'a, W>) -> Result<()> {
         if let Some((staged, notstaged, untracked, conflicted)) = count_stage(&git) {
             if staged > 0 {
                 let (fg, bg) = (Color::GitStagedFg, Color::GitStagedBg);
-                p.add(Segment::new(&format!("{}\u{2714}", staged), fg, bg))?;
+                p.append(Segment::new(&format!("{}\u{2714}", staged), fg, bg))?;
             }
             if notstaged > 0 {
                 let (fg, bg) = (Color::GitNotstagedFg, Color::GitNotstagedBg);
-                p.add(Segment::new(&format!("{}\u{270E}", notstaged), fg, bg))?;
+                p.append(Segment::new(&format!("{}\u{270E}", notstaged), fg, bg))?;
             }
             if untracked > 0 {
                 let (fg, bg) = (Color::GitUntrackedFg, Color::GitUntrackedBg);
-                p.add(Segment::new(&format!("{}+", untracked), fg, bg))?;
+                p.append(Segment::new(&format!("{}+", untracked), fg, bg))?;
             }
             if conflicted > 0 {
                 let (fg, bg) = (Color::GitConflictedFg, Color::GitConflictedBg);
-                p.add(Segment::new(&format!("{}*", conflicted), fg, bg))?;
+                p.append(Segment::new(&format!("{}*", conflicted), fg, bg))?;
             }
         }
     } else {
         let (fg, bg) = (Color::RepoDirtyFg, Color::RepoDirtyBg);
-        p.add(Segment::new("Big Bang", fg, bg))?;
+        p.append(Segment::new("Big Bang", fg, bg))?;
     }
 
     Ok(())

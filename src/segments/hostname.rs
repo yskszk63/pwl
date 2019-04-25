@@ -1,14 +1,14 @@
-use std::io::{Result, Write};
+use std::io::Result;
 
 use super::Segment;
 use crate::color::Color;
-use crate::powerline::Powerline;
+use crate::powerline::SegmentTarget;
 use crate::shell::Shell;
 
-pub fn write_hostname<'a, W: Write>(p: &mut Powerline<'a, W>) -> Result<()> {
+pub fn write_hostname(p: &mut impl SegmentTarget) -> Result<()> {
     let t = match p.shell() {
         Shell::Bash => "\\h",
     };
     let (fg, bg) = (Color::HostnameFg, Color::HostnameBg);
-    p.add(Segment::new(t, fg, bg))
+    p.append(Segment::new(t, fg, bg))
 }

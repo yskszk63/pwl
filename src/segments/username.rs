@@ -1,13 +1,13 @@
-use std::io::{Result, Write};
+use std::io::Result;
 
 use nix::unistd::Uid;
 
 use super::Segment;
 use crate::color::Color;
-use crate::powerline::Powerline;
+use crate::powerline::SegmentTarget;
 use crate::shell::Shell;
 
-pub fn write_username<'a, W: Write>(p: &mut Powerline<'a, W>) -> Result<()> {
+pub fn write_username(p: &mut impl SegmentTarget) -> Result<()> {
     let t = match p.shell() {
         Shell::Bash => "\\u",
     };
@@ -16,5 +16,5 @@ pub fn write_username<'a, W: Write>(p: &mut Powerline<'a, W>) -> Result<()> {
     } else {
         (Color::UsernameFg, Color::UsernameBg)
     };
-    p.add(Segment::new(t, fg, bg))
+    p.append(Segment::new(t, fg, bg))
 }
