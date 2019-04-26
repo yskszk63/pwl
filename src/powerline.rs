@@ -41,7 +41,7 @@ impl<'a, W: Write> Powerline<'a, W> {
     pub fn draw(&mut self, segments: &(dyn AsRef<[Segments]>)) -> Result<()> {
         for seg in segments.as_ref() {
             match seg {
-                Segments::Root => seg::write_root(self, &self.last_exit_status.clone())?,
+                Segments::Root => seg::write_root(self, self.last_exit_status)?,
                 Segments::Cwd => seg::write_cwd(self, self.cwd_short)?,
                 Segments::Jobs => seg::write_jobs(self)?,
                 Segments::Virtualenv => seg::write_virtualenv(self)?,
