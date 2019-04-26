@@ -1,14 +1,13 @@
 use std::io::{Result, Write};
 
 use crate::color::Color;
-use crate::segments::{self as seg, Segment, Segments};
+use crate::segments::{self as seg, Segment, SegmentContent, Segments};
 use crate::shell::Shell;
+use crate::symbol::Symbol;
 use crate::theme::Theme;
 
 pub trait SegmentTarget {
     fn append(&mut self, segment: Segment) -> Result<()>;
-    fn shell(&self) -> &Shell;
-    fn last_exit_status(&self) -> &Option<i32>;
 }
 
 #[derive(Debug)]
@@ -42,7 +41,7 @@ impl<'a, W: Write> Powerline<'a, W> {
     pub fn draw(&mut self, segments: &(dyn AsRef<[Segments]>)) -> Result<()> {
         for seg in segments.as_ref() {
             match seg {
-                Segments::Root => seg::write_root(self)?,
+                Segments::Root => seg::write_root(self, &self.last_exit_status.clone())?,
                 Segments::Cwd => seg::write_cwd(self, self.cwd_short)?,
                 Segments::Jobs => seg::write_jobs(self)?,
                 Segments::Virtualenv => seg::write_virtualenv(self)?,
@@ -56,7 +55,8 @@ impl<'a, W: Write> Powerline<'a, W> {
         if let Some((_, last_bg)) = &self.last_color {
             self.shell.write_reset(self.output)?;
             self.shell.write_fg(self.output, self.theme.get(last_bg))?;
-            write!(self.output, "{}", self.theme.separator())?;
+            self.shell
+                .write_symbol(self.output, &Symbol::Separator, false)?;
             self.shell.write_reset(self.output)?;
             write!(self.output, " ")?;
         }
@@ -64,23 +64,30 @@ impl<'a, W: Write> Powerline<'a, W> {
     }
 
     pub fn add(&mut self, segment: Segment) -> Result<()> {
-        let (text, fg, bg) = segment.parts();
+        let (content, fg, bg) = segment.parts();
 
         if let Some((last_fg, last_bg)) = &self.last_color {
             if last_bg == &bg {
                 self.shell.write_bg(self.output, self.theme.get(&bg))?;
                 self.shell.write_fg(self.output, self.theme.get(last_fg))?;
-                write!(self.output, "{}", self.theme.separator_thin())?;
+                self.shell
+                    .write_symbol(self.output, &Symbol::SeparatorThin, false)?;
             } else {
                 self.shell.write_bg(self.output, self.theme.get(&bg))?;
                 self.shell.write_fg(self.output, self.theme.get(last_bg))?;
-                write!(self.output, "{}", self.theme.separator())?;
+                self.shell
+                    .write_symbol(self.output, &Symbol::Separator, false)?;
             }
         };
 
         self.shell.write_fg(self.output, self.theme.get(&fg))?;
         self.shell.write_bg(self.output, self.theme.get(&bg))?;
-        write!(self.output, " {} ", text)?;
+        match content {
+            SegmentContent::Text(text) => write!(self.output, " {} ", text)?,
+            SegmentContent::Symbol(symbol) => {
+                self.shell.write_symbol(self.output, &symbol, true)?
+            }
+        };
 
         self.last_color = Some((fg, bg));
         Ok(())
@@ -90,13 +97,5 @@ impl<'a, W: Write> Powerline<'a, W> {
 impl<'a, W: Write> SegmentTarget for Powerline<'a, W> {
     fn append(&mut self, segment: Segment) -> Result<()> {
         self.add(segment)
-    }
-
-    fn shell(&self) -> &Shell {
-        &self.shell
-    }
-
-    fn last_exit_status(&self) -> &Option<i32> {
-        &self.last_exit_status
     }
 }

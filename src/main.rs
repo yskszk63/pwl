@@ -8,6 +8,7 @@ mod color;
 mod powerline;
 mod segments;
 mod shell;
+mod symbol;
 mod theme;
 
 arg_enum! {

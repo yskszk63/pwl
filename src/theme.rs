@@ -2,9 +2,6 @@ use crate::color::Color;
 
 #[derive(Debug)]
 pub struct Theme {
-    separator: &'static str,
-    separator_thin: &'static str,
-
     username_fg: u8,
     username_bg: u8,
     username_root_bg: u8,
@@ -102,22 +99,11 @@ impl Theme {
             Color::VirtualenvBg => self.virtualenv_bg,
         }
     }
-
-    pub fn separator(&self) -> &str {
-        &self.separator
-    }
-
-    pub fn separator_thin(&self) -> &str {
-        &self.separator_thin
-    }
 }
 
 impl Default for Theme {
     fn default() -> Theme {
         Theme {
-            separator: "\u{E0B0}",
-            separator_thin: "\u{E0B1}",
-
             username_fg: 250,
             username_bg: 240,
             username_root_bg: 124,
