@@ -39,8 +39,7 @@ jobs:
       - task: PublishCodeCoverageResults@1
         inputs:
           codeCoverageTool: 'cobertura'
-          summaryFileLocation: 'target/cov/kcov-merged/cobertura.xml'
-          reportDirectory: 'target/cov'
+          summaryFileLocation: '$(System.DefaultWorkingDirectory)/target/cov/kcov-merged/cobertura.xml'
 
       - script: |
           cargo build --target=x86_64-unknown-linux-musl --release
