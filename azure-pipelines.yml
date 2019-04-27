@@ -20,7 +20,8 @@ jobs:
           cargo install cargo2junit
           cargo install cargo-kcov
           rustup target add x86_64-unknown-linux-musl
-          sudo apt-get -qq install musl-tools kcov
+          sudo apt-get -qq install musl-tools cmake g++ pkg-config jq libcurl4-openssl-dev libelf-dev libdw-dev binutils-dev libiberty-dev
+          cargo kcov --print-install-kcov-sh | sh
         displayName: 'Add tools'
 
       - script: cargo test -- -Z unstable-options --format json | cargo2junit > results.xml
@@ -39,6 +40,7 @@ jobs:
         inputs:
           codeCoverageTool: 'cobertura'
           summaryFileLocation: 'target/cov/kcov-merged/cobertura.xml'
+          reportDirectory: 'target/cov'
 
       - script: |
           cargo build --target=x86_64-unknown-linux-musl --release
