@@ -18,10 +18,9 @@ jobs:
 
       - script: |
           cargo install cargo2junit
-          cargo install cargo-kcov
           rustup target add x86_64-unknown-linux-musl
-          sudo apt-get -qq install musl-tools cmake g++ pkg-config jq libcurl4-openssl-dev libelf-dev libdw-dev binutils-dev libiberty-dev
-          cargo kcov --print-install-kcov-sh | sh
+          sudo apt-get -qq install musl-tools libssl-dev pkg-config cmake zlib1g-dev
+          RUSTFLAGS="--cfg procmacro2_semver_exempt" cargo install cargo-tarpaulin -f
         displayName: 'Add tools'
 
       - script: cargo test -- -Z unstable-options --format json | cargo2junit > results.xml
@@ -33,15 +32,13 @@ jobs:
           testResultsFiles: 'results.xml'
         condition: succeededOrFailed()
 
-      - script: |
-          cargo kcov
-          find target/cov
+      - script: cargo tarpaulin --out Xml
         displayName: 'Coverage'
 
       - task: PublishCodeCoverageResults@1
         inputs:
           codeCoverageTool: 'Cobertura'
-          summaryFileLocation: '$(System.DefaultWorkingDirectory)/target/cov/kcov-merged/cobertura.xml'
+          summaryFileLocation: '$(System.DefaultWorkingDirectory)/cobertura.xml'
 
       - script: |
           cargo build --target=x86_64-unknown-linux-musl --release
