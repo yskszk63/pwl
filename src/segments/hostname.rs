@@ -17,7 +17,7 @@ mod test {
 
     #[test]
     pub fn test_none() {
-        write_hostname(&mut |seg: Segment<'_> | {
+        write_hostname(&mut |seg: Segment<'_>| {
             if let (SegmentContent::Symbol(sym), fg, bg) = seg.parts() {
                 assert_eq!(sym, Symbol::Hostname);
                 assert_eq!(fg, Color::HostnameFg);
@@ -25,7 +25,8 @@ mod test {
             } else {
                 panic!()
             }
-        }).unwrap();
+        })
+        .unwrap();
     }
 
 }

@@ -55,8 +55,7 @@ impl<'a, W: Write> Powerline<'a, W> {
         if let Some((_, last_bg)) = &self.last_color {
             self.shell.write_reset(self.output)?;
             self.shell.write_fg(self.output, self.theme.get(last_bg))?;
-            self.shell
-                .write_symbol(self.output, &Symbol::Separator, false)?;
+            write!(self.output, "{}", self.shell.symbol(&Symbol::Separator))?;
             self.shell.write_reset(self.output)?;
             write!(self.output, " ")?;
         }
@@ -70,13 +69,11 @@ impl<'a, W: Write> Powerline<'a, W> {
             if last_bg == &bg {
                 self.shell.write_bg(self.output, self.theme.get(&bg))?;
                 self.shell.write_fg(self.output, self.theme.get(last_fg))?;
-                self.shell
-                    .write_symbol(self.output, &Symbol::SeparatorThin, false)?;
+                write!(self.output, "{}", self.shell.symbol(&Symbol::SeparatorThin))?
             } else {
                 self.shell.write_bg(self.output, self.theme.get(&bg))?;
                 self.shell.write_fg(self.output, self.theme.get(last_bg))?;
-                self.shell
-                    .write_symbol(self.output, &Symbol::Separator, false)?;
+                write!(self.output, "{}", self.shell.symbol(&Symbol::Separator))?
             }
         };
 
@@ -85,7 +82,10 @@ impl<'a, W: Write> Powerline<'a, W> {
         match content {
             SegmentContent::Text(text) => write!(self.output, " {} ", text)?,
             SegmentContent::Symbol(symbol) => {
-                self.shell.write_symbol(self.output, &symbol, true)?
+                write!(self.output, " {} ", self.shell.symbol(&symbol))?
+            }
+            SegmentContent::TextSym(text, symbol) => {
+                write!(self.output, " {}{} ", text, self.shell.symbol(&symbol))?
             }
         };
 

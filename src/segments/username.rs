@@ -23,7 +23,7 @@ mod test {
 
     #[test]
     pub fn test_none() {
-        write_username(&mut |seg: Segment<'_> | {
+        write_username(&mut |seg: Segment<'_>| {
             if let (SegmentContent::Symbol(sym), fg, bg) = seg.parts() {
                 assert_eq!(sym, Symbol::Username);
                 assert_eq!(fg, Color::UsernameFg);
@@ -31,7 +31,8 @@ mod test {
             } else {
                 panic!()
             }
-        }).unwrap();
+        })
+        .unwrap();
     }
 
 }

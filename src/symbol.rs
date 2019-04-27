@@ -7,4 +7,12 @@ pub enum Symbol {
 
     Hostname,
     Username,
+
+    GitAhead,
+    GitBehind,
+
+    GitStaged,
+    GitNotstaged,
+    GitUntracked,
+    GitConflicted,
 }

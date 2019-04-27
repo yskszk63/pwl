@@ -35,6 +35,7 @@ pub enum Segments {
 pub enum SegmentContent<'a> {
     Symbol(Symbol),
     Text(&'a str),
+    TextSym(&'a str, Symbol),
 }
 
 #[derive(Debug)]
@@ -52,6 +53,11 @@ impl<'a> Segment<'a> {
 
     pub fn symbol(symbol: Symbol, fg: Color, bg: Color) -> Segment<'a> {
         let content = SegmentContent::Symbol(symbol);
+        Segment { content, fg, bg }
+    }
+
+    pub fn text_sym(text: &'a str, symbol: Symbol, fg: Color, bg: Color) -> Segment<'a> {
+        let content = SegmentContent::TextSym(text, symbol);
         Segment { content, fg, bg }
     }
 

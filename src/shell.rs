@@ -26,15 +26,14 @@ impl Shell {
         }
     }
 
-    pub fn write_symbol(&self, w: &mut (impl Write), symbol: &Symbol, padding: bool) -> Result<()> {
+    pub fn symbol(&self, symbol: &Symbol) -> &'static str {
         match self {
-            Shell::Bash if padding => write!(w, " {} ", bash_symbol(symbol)),
-            Shell::Bash => write!(w, "{}", bash_symbol(symbol)),
+            Shell::Bash => bash_symbol(symbol),
         }
     }
 }
 
-fn bash_symbol(symbol: &Symbol) -> &str {
+fn bash_symbol(symbol: &Symbol) -> &'static str {
     match symbol {
         Symbol::Separator => "\u{E0B0}",
         Symbol::SeparatorThin => "\u{E0B1}",
@@ -43,5 +42,13 @@ fn bash_symbol(symbol: &Symbol) -> &str {
 
         Symbol::Hostname => "\\h",
         Symbol::Username => "\\u",
+
+        Symbol::GitAhead => "\u{2B06}",
+        Symbol::GitBehind => "\u{2B07}",
+
+        Symbol::GitStaged => "\u{2714}",
+        Symbol::GitNotstaged => "\u{270E}",
+        Symbol::GitUntracked => "+",
+        Symbol::GitConflicted => "*",
     }
 }
