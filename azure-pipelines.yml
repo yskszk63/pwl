@@ -34,8 +34,10 @@ jobs:
 
       - script: |
           cargo tarpaulin --out Xml
-          bash <(curl -s https://codecov.io/bash) -- -t $(CODECOV_TOKEN)
+          bash <(curl -s https://codecov.io/bash)
         displayName: 'Coverage'
+        env:
+          CODECOV_TOKEN: $(CODECOV_TOKEN)
 
       - script: |
           cargo build --target=x86_64-unknown-linux-musl --release
