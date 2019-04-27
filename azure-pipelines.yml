@@ -18,9 +18,10 @@ jobs:
 
       - script: |
           cargo install cargo2junit
+          cargo install cargo-kcov
           rustup target add x86_64-unknown-linux-musl
-          sudo apt-get -qq install musl-tools
-        displayName: 'Add musl target'
+          sudo apt-get -qq install musl-tools kcov
+        displayName: 'Add tools'
 
       - script: cargo test -- -Z unstable-options --format json | cargo2junit > results.xml
         displayName: 'Tests'
@@ -30,6 +31,14 @@ jobs:
           testResultsFormat: 'JUnit'
           testResultsFiles: 'results.xml'
         condition: succeededOrFailed()
+
+      - script: cargo kcov
+        displayName: 'Coverage'
+
+      - task: PublishCodeCoverageResults@1
+        inputs:
+          codeCoverageTool: 'cobertura'
+          summaryFileLocation: 'target/cov/kcov-merged/cobertura.xml'
 
       - script: |
           cargo build --target=x86_64-unknown-linux-musl --release
