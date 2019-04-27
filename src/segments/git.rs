@@ -284,6 +284,8 @@ mod test {
             &[
                 "git init",
                 "git checkout -b x",
+                "git config user.email 'you@example.com'",
+                "git config user.name 'Your Name'",
                 "git commit -mx --allow-empty",
             ],
         );
@@ -324,6 +326,8 @@ mod test {
                 "echo wt del > wt_del",
                 "echo conflict > conflict",
                 "git add mod rename del change wt_mod wt_change wt_del conflict",
+                "git config user.email 'you@example.com'",
+                "git config user.name 'Your Name'",
                 "git commit -mx",
             ],
         );
@@ -332,6 +336,8 @@ mod test {
             &[
                 "git clone ../a .",
                 "echo mod1 > conflict",
+                "git config user.email 'you@example.com'",
+                "git config user.name 'Your Name'",
                 "git commit -amx",
             ],
         );
