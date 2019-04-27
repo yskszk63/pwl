@@ -33,12 +33,14 @@ jobs:
           testResultsFiles: 'results.xml'
         condition: succeededOrFailed()
 
-      - script: cargo kcov
+      - script: |
+          cargo kcov
+          find target/cov
         displayName: 'Coverage'
 
       - task: PublishCodeCoverageResults@1
         inputs:
-          codeCoverageTool: 'cobertura'
+          codeCoverageTool: 'Cobertura'
           summaryFileLocation: '$(System.DefaultWorkingDirectory)/target/cov/kcov-merged/cobertura.xml'
 
       - script: |
