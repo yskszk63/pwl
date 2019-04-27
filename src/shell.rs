@@ -8,19 +8,19 @@ pub enum Shell {
 }
 
 impl Shell {
-    pub fn write_fg(&self, w: &mut (dyn Write), color: u8) -> Result<()> {
+    pub fn write_fg(&self, w: &mut (impl Write), color: u8) -> Result<()> {
         match self {
             Shell::Bash => write!(w, "\\[\\e[38;5;{}m\\]", color),
         }
     }
 
-    pub fn write_bg(&self, w: &mut (dyn Write), color: u8) -> Result<()> {
+    pub fn write_bg(&self, w: &mut (impl Write), color: u8) -> Result<()> {
         match self {
             Shell::Bash => write!(w, "\\[\\e[48;5;{}m\\]", color),
         }
     }
 
-    pub fn write_reset(&self, w: &mut (dyn Write)) -> Result<()> {
+    pub fn write_reset(&self, w: &mut (impl Write)) -> Result<()> {
         match self {
             Shell::Bash => write!(w, "\\[\\e[0m\\]"),
         }
@@ -50,5 +50,37 @@ fn bash_symbol(symbol: &Symbol) -> &'static str {
         Symbol::GitNotstaged => "\u{270E}",
         Symbol::GitUntracked => "+",
         Symbol::GitConflicted => "*",
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    pub fn test_bash() {
+        let mut buf = vec![];
+        Shell::Bash.write_fg(&mut buf, 0).unwrap();
+        // TODO assert
+
+        let mut buf = vec![];
+        Shell::Bash.write_bg(&mut buf, 0).unwrap();
+        // TODO assert
+
+        let mut buf = vec![];
+        Shell::Bash.write_reset(&mut buf).unwrap();
+        // TODO assert
+
+        Shell::Bash.symbol(&Symbol::Separator);
+        Shell::Bash.symbol(&Symbol::SeparatorThin);
+        Shell::Bash.symbol(&Symbol::Root);
+        Shell::Bash.symbol(&Symbol::Hostname);
+        Shell::Bash.symbol(&Symbol::Username);
+        Shell::Bash.symbol(&Symbol::GitAhead);
+        Shell::Bash.symbol(&Symbol::GitBehind);
+        Shell::Bash.symbol(&Symbol::GitStaged);
+        Shell::Bash.symbol(&Symbol::GitNotstaged);
+        Shell::Bash.symbol(&Symbol::GitUntracked);
+        Shell::Bash.symbol(&Symbol::GitConflicted);
     }
 }

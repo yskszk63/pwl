@@ -185,3 +185,59 @@ pub fn solarized_light() -> Theme {
         ..Default::default()
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    pub fn test_default() {
+        let t = Theme::default();
+
+        t.get(&Color::UsernameFg);
+        t.get(&Color::UsernameBg);
+        t.get(&Color::UsernameRootBg);
+
+        t.get(&Color::HostnameFg);
+        t.get(&Color::HostnameBg);
+
+        t.get(&Color::CmdPassedFg);
+        t.get(&Color::CmdPassedBg);
+        t.get(&Color::CmdFailedFg);
+        t.get(&Color::CmdFailedBg);
+
+        t.get(&Color::HomeFg);
+        t.get(&Color::HomeBg);
+        t.get(&Color::PathFg);
+        t.get(&Color::PathBg);
+        t.get(&Color::CwdFg);
+
+        t.get(&Color::SshFg);
+        t.get(&Color::SshBg);
+
+        t.get(&Color::RepoCleanFg);
+        t.get(&Color::RepoCleanBg);
+        t.get(&Color::RepoDirtyFg);
+        t.get(&Color::RepoDirtyBg);
+
+        t.get(&Color::GitAheadFg);
+        t.get(&Color::GitAheadBg);
+        t.get(&Color::GitBehindFg);
+        t.get(&Color::GitBehindBg);
+
+        t.get(&Color::GitStagedFg);
+        t.get(&Color::GitStagedBg);
+        t.get(&Color::GitNotstagedFg);
+        t.get(&Color::GitNotstagedBg);
+        t.get(&Color::GitUntrackedFg);
+        t.get(&Color::GitUntrackedBg);
+        t.get(&Color::GitConflictedFg);
+        t.get(&Color::GitConflictedBg);
+
+        t.get(&Color::JobsFg);
+        t.get(&Color::JobsBg);
+
+        t.get(&Color::VirtualenvFg);
+        t.get(&Color::VirtualenvBg);
+    }
+}
