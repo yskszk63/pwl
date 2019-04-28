@@ -38,7 +38,7 @@ impl<'a, W: Write> Powerline<'a, W> {
         }
     }
 
-    pub fn draw(&mut self, segments: &(dyn AsRef<[Segments]>)) -> Result<()> {
+    pub fn draw(&mut self, segments: &(impl AsRef<[Segments]>)) -> Result<()> {
         for seg in segments.as_ref() {
             match seg {
                 Segments::Root => seg::write_root(self, self.last_exit_status)?,
@@ -98,4 +98,28 @@ impl<'a, W: Write> SegmentTarget for Powerline<'a, W> {
     fn append(&mut self, segment: Segment) -> Result<()> {
         self.add(segment)
     }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    pub fn test_empty() {
+        let mut o = vec![];
+        let mut p = Powerline::new(None, false, Theme::default(), Shell::Bash, &mut o);
+        let segments = vec![];
+        p.draw(&segments).unwrap();
+        assert_eq!(o, b"")
+    }
+
+    #[test]
+    pub fn test_root() {
+        let mut o = vec![];
+        let mut p = Powerline::new(None, false, Theme::default(), Shell::Bash, &mut o);
+        let segments = vec![crate::segments::Segments::Root];
+        p.draw(&segments).unwrap();
+        assert_eq!(String::from_utf8(o.clone()).unwrap(), r#"\[\e[38;5;15m\]\[\e[48;5;236m\] \$ \[\e[0m\]\[\e[38;5;236m\]\[\e[0m\] "#);
+    }
+
 }
