@@ -18,3 +18,13 @@ Bash
 prompt() { PS1="$(path/to/pwl $?)"; }
 PROMPT_COMMAND=prompt
 ```
+
+---
+
+[![asciicast](https://asciinema.org/a/VHDz4OXUWoJDdmV0DchLXK74F.svg)](https://asciinema.org/a/VHDz4OXUWoJDdmV0DchLXK74F)
+
+*pwl*
+
+[![asciicast](https://asciinema.org/a/H62o2LKhD81SUTAMSBqja97hX.svg)](https://asciinema.org/a/H62o2LKhD81SUTAMSBqja97hX)
+
+*powerline-shell*
