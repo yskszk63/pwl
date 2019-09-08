@@ -119,7 +119,10 @@ mod test {
         let mut p = Powerline::new(None, false, Theme::default(), Shell::Bash, &mut o);
         let segments = vec![crate::segments::Segments::Root];
         p.draw(&segments).unwrap();
-        assert_eq!(String::from_utf8(o.clone()).unwrap(), r#"\[\e[38;5;15m\]\[\e[48;5;236m\] \$ \[\e[0m\]\[\e[38;5;236m\]\[\e[0m\] "#);
+        assert_eq!(
+            String::from_utf8(o.clone()).unwrap(),
+            r#"\[\e[38;5;15m\]\[\e[48;5;236m\] \$ \[\e[0m\]\[\e[38;5;236m\]\[\e[0m\] "#
+        );
     }
 
 }

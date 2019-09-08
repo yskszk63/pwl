@@ -1,3 +1,5 @@
+#![warn(clippy::pedantic)]
+
 use clap::{arg_enum, crate_name, crate_version, value_t_or_exit, values_t_or_exit, App, Arg};
 
 use crate::powerline::Powerline;
@@ -83,7 +85,7 @@ fn main() {
         .map(CliSegments::into_segments)
         .collect::<Vec<_>>();
     let theme = match value_t_or_exit!(matches, "theme", CliTheme) {
-        CliTheme::Default => Default::default(),
+        CliTheme::Default => theme::Theme::default(),
         CliTheme::SolarizedLight => theme::solarized_light(),
     };
     let cwd_short = matches.is_present("cwd-short");

@@ -103,12 +103,11 @@ fn write_git_with_repo(p: &mut impl SegmentTarget, path: impl AsRef<Path>) -> Re
                     .renames_head_to_index(true),
             ))
             .ok()
-            .map(|statuses| statuses.iter().next().is_some())
-            .unwrap_or(false);
-        let (fg, bg) = if !has_status {
-            (Color::RepoCleanFg, Color::RepoCleanBg)
-        } else {
+            .map_or(false, |statuses| statuses.iter().next().is_some());
+        let (fg, bg) = if has_status {
             (Color::RepoDirtyFg, Color::RepoDirtyBg)
+        } else {
+            (Color::RepoCleanFg, Color::RepoCleanBg)
         };
         p.append(Segment::new(&branch_name, fg, bg))?;
 

@@ -102,8 +102,8 @@ impl Theme {
 }
 
 impl Default for Theme {
-    fn default() -> Theme {
-        Theme {
+    fn default() -> Self {
+        Self {
             username_fg: 250,
             username_bg: 240,
             username_root_bg: 124,
@@ -182,7 +182,7 @@ pub fn solarized_light() -> Theme {
         virtualenv_fg: 15,
         virtualenv_bg: 2,
 
-        ..Default::default()
+        ..Theme::default()
     }
 }
 

@@ -14,14 +14,14 @@ struct Env {
 }
 
 impl Env {
-    fn new() -> Option<Env> {
+    fn new() -> Option<Self> {
         let cwd = current_dir();
         let home = home_dir();
         let (cwd, home) = match (cwd, home) {
             (Ok(cwd), home) => (cwd, home),
             _ => return None,
         };
-        Some(Env { cwd, home })
+        Some(Self { cwd, home })
     }
 }
 
@@ -86,8 +86,7 @@ fn write_cwd_full(p: &mut impl SegmentTarget, env: Env) -> Result<()> {
                 };
                 p.append(Segment::new(&prefix, fg, bg))?;
             }
-            Component::RootDir => {}
-            Component::CurDir => {}
+            Component::RootDir | Component::CurDir => {}
             Component::ParentDir => {
                 let (fg, bg) = match iter.peek() {
                     Some(_) => (Color::PathFg, Color::PathBg),
