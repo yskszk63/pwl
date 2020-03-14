@@ -8,19 +8,19 @@ pub enum Shell {
 }
 
 impl Shell {
-    pub fn write_fg(&self, w: &mut (impl Write), color: u8) -> Result<()> {
+    pub fn write_fg(&self, w: &mut impl Write, color: u8) -> Result<()> {
         match self {
             Shell::Bash => write!(w, "\\[\\e[38;5;{}m\\]", color),
         }
     }
 
-    pub fn write_bg(&self, w: &mut (impl Write), color: u8) -> Result<()> {
+    pub fn write_bg(&self, w: &mut impl Write, color: u8) -> Result<()> {
         match self {
             Shell::Bash => write!(w, "\\[\\e[48;5;{}m\\]", color),
         }
     }
 
-    pub fn write_reset(&self, w: &mut (impl Write)) -> Result<()> {
+    pub fn write_reset(&self, w: &mut impl Write) -> Result<()> {
         match self {
             Shell::Bash => write!(w, "\\[\\e[0m\\]"),
         }

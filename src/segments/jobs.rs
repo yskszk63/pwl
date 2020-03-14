@@ -61,5 +61,4 @@ mod test {
     pub fn test_none() {
         write_jobs(&mut |_seg: Segment<'_>| panic!()).unwrap();
     }
-
 }

@@ -38,7 +38,7 @@ impl<'a, W: Write> Powerline<'a, W> {
         }
     }
 
-    pub fn draw(&mut self, segments: &(impl AsRef<[Segments]>)) -> Result<()> {
+    pub fn draw(&mut self, segments: &impl AsRef<[Segments]>) -> Result<()> {
         for seg in segments.as_ref() {
             match seg {
                 Segments::Root => seg::write_root(self, self.last_exit_status)?,
@@ -124,5 +124,4 @@ mod test {
             r#"\[\e[38;5;15m\]\[\e[48;5;236m\] \$ \[\e[0m\]\[\e[38;5;236m\]\[\e[0m\] "#
         );
     }
-
 }

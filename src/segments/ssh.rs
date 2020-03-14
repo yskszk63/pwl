@@ -40,5 +40,4 @@ mod test {
         remove_var("SSH_CLIENT");
         write_ssh(&mut |_seg: Segment<'_>| panic!()).unwrap();
     }
-
 }

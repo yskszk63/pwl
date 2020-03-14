@@ -34,5 +34,4 @@ mod test {
         })
         .unwrap();
     }
-
 }

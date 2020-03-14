@@ -28,5 +28,4 @@ mod test {
         })
         .unwrap();
     }
-
 }

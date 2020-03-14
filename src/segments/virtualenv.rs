@@ -71,5 +71,4 @@ mod test {
         remove_var("VIRTUAL_ENV");
         write_virtualenv(&mut |_seg: Segment<'_>| panic!()).unwrap();
     }
-
 }
