@@ -1,15 +1,10 @@
 [package]
 name = "pwl"
-version = "0.1.0"
-authors = ["ysk"]
+version = "0.2.0"
+authors = ["yskszk63 <yskszk63@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-clap = "2"
-dirs = "1"
-nix = "0.13"
-#git2 = "0.8"
-
-[dependencies.git2]
-version = "0.8"
-default-features = false
+anyhow = "1.0"
+git2 = { version="0.13", default-features=false }
+home = "0.5"

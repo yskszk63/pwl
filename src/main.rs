@@ -1,99 +1,61 @@
-#![warn(clippy::pedantic)]
+use std::io;
 
-use clap::{arg_enum, crate_name, crate_version, value_t_or_exit, values_t_or_exit, App, Arg};
+pub use segment::Segment;
+pub use color::Color;
+use module::{Environment, Module};
+use theme::Theme;
+use prompt::BashPromptWrite;
 
-use crate::powerline::Powerline;
-use crate::segments::Segments;
-use crate::shell::Shell;
-
+mod segment;
 mod color;
-mod powerline;
-mod segments;
-mod shell;
-mod symbol;
+mod prompt;
+mod module;
 mod theme;
 
-arg_enum! {
-    pub enum CliSegments {
-        Virtualenv,
-        Username,
-        Hostname,
-        Ssh,
-        Cwd,
-        Git,
-        Jobs,
-        Root,
-    }
-}
+fn main() -> anyhow::Result<()> {
+    let modules = [
+        Module::Cwd,
+        Module::GitBranch,
+        Module::GitAheadBehind,
+        Module::GitStaged,
+        Module::GitNotStaged,
+        Module::GitUntracked,
+        Module::GitConflicted,
+        Module::Root,
+    ];
+    let theme = Theme::Light;
+    let mut env = Environment::new(0);
 
-arg_enum! {
-    pub enum CliTheme {
-        Default,
-        SolarizedLight,
-    }
-}
+    let stdout = io::stdout();
+    let mut prompt = BashPromptWrite::new(io::BufWriter::new(stdout.lock()));
 
-impl CliSegments {
-    pub fn into_segments(self) -> Segments {
-        match self {
-            CliSegments::Root => Segments::Root,
-            CliSegments::Cwd => Segments::Cwd,
-            CliSegments::Jobs => Segments::Jobs,
-            CliSegments::Virtualenv => Segments::Virtualenv,
-            CliSegments::Username => Segments::Username,
-            CliSegments::Hostname => Segments::Hostname,
-            CliSegments::Ssh => Segments::Ssh,
-            CliSegments::Git => Segments::Git,
+    let mut previous = None;
+    let mut previous_group = None;
+    for module in &modules[..] {
+        if let Some(segment) = module.render(&mut env)? {
+            let (fg, bg) = theme.resolve(&segment.color());
+            if segment.group().is_none() || segment.group() != previous_group.as_ref() {
+                if let Some((_, previous)) = previous {
+                    prompt.write_fg(previous)?;
+                    prompt.write_bg(bg)?;
+                    prompt.write_text("")?;
+                }
+            }
+
+            prompt.write_fg(fg)?;
+            prompt.write_bg(bg)?;
+            prompt.write_text(&format!("{} ", segment.text()))?;
+
+            previous = Some((fg, bg));
+            previous_group = segment.group().cloned();
         }
     }
-}
 
-fn main() {
-    let x = CliSegments::variants().join(",");
-
-    let matches = App::new(crate_name!())
-        .version(crate_version!())
-        .arg(Arg::with_name("RC"))
-        .arg(
-            Arg::with_name("segments")
-                .short("s")
-                .long("segments")
-                .possible_values(&CliSegments::variants())
-                .value_name("SEGMENTS")
-                .value_delimiter(",")
-                .case_insensitive(true)
-                .default_value(&x),
-        )
-        .arg(
-            Arg::with_name("theme")
-                .short("t")
-                .long("theme")
-                .possible_values(&CliTheme::variants())
-                .value_name("THEME")
-                .case_insensitive(true)
-                .default_value("default"),
-        )
-        .arg(Arg::with_name("cwd-short").long("cwd-short"))
-        .get_matches();
-
-    let rc = matches
-        .value_of("RC")
-        .map(|rc| rc.parse::<i32>().unwrap_or(-1));
-    let segments = values_t_or_exit!(matches, "segments", CliSegments);
-    let segments = segments
-        .into_iter()
-        .map(CliSegments::into_segments)
-        .collect::<Vec<_>>();
-    let theme = match value_t_or_exit!(matches, "theme", CliTheme) {
-        CliTheme::Default => theme::Theme::default(),
-        CliTheme::SolarizedLight => theme::solarized_light(),
-    };
-    let cwd_short = matches.is_present("cwd-short");
-    let shell = Shell::Bash;
-
-    let output = std::io::stdout();
-    let mut output = std::io::BufWriter::new(output.lock());
-    let mut pwl = Powerline::new(rc, cwd_short, theme, shell, &mut output);
-
-    pwl.draw(&segments).unwrap();
+    if let Some((_, previous)) = previous {
+        prompt.write_reset()?;
+        prompt.write_fg(previous)?;
+        prompt.write_text(" ")?;
+    }
+    prompt.write_reset()?;
+    Ok(())
 }
