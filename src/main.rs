@@ -44,7 +44,7 @@ fn main() -> anyhow::Result<()> {
 
             prompt.write_fg(fg)?;
             prompt.write_bg(bg)?;
-            prompt.write_text(&format!("{} ", segment.text()))?;
+            prompt.write_text(&format!(" {} ", segment.text()))?;
 
             previous = Some((fg, bg));
             previous_group = segment.group().cloned();
