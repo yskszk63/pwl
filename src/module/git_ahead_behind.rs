@@ -1,10 +1,14 @@
 use crate::segment::Group;
-use git2::BranchType;
+use git2::{BranchType, ErrorCode};
 use super::*;
 
 pub fn render(env: &Environment) -> anyhow::Result<Option<Segment>> {
     if let Some(repo) = &env.repo {
-        let head = repo.head()?;
+        let head = match repo.head() {
+            Ok(head) => head,
+            Err(err) if err.code() == ErrorCode::UnbornBranch => return Ok(None),
+            Err(err) => Err(err)?,
+        };
         let local = head.target();
         let name = head.shorthand();
         if let (Some(local), Some(name)) = (local, name) {
