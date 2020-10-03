@@ -1,4 +1,5 @@
 use std::io;
+use std::env;
 
 pub use segment::Segment;
 pub use color::Color;
@@ -13,6 +14,7 @@ mod module;
 mod theme;
 
 fn main() -> anyhow::Result<()> {
+    let exit_code = env::args().nth(1).map_or(Ok(0), |v| v.parse()).unwrap_or(0);
     let modules = [
         Module::Cwd,
         Module::GitBranch,
@@ -24,7 +26,7 @@ fn main() -> anyhow::Result<()> {
         Module::Root,
     ];
     let theme = Theme::Light;
-    let mut env = Environment::new(0);
+    let mut env = Environment::new(exit_code);
 
     let stdout = io::stdout();
     let mut prompt = BashPromptWrite::new(io::BufWriter::new(stdout.lock()));
