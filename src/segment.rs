@@ -9,7 +9,7 @@ pub enum Group {
 pub struct Builder {
     color: Color,
     text: String,
-    group: Option<Group>
+    group: Option<Group>,
 }
 
 impl Builder {
@@ -31,7 +31,7 @@ impl Builder {
 pub struct Segment {
     color: Color,
     text: String,
-    group: Option<Group>
+    group: Option<Group>,
 }
 
 impl Segment {
