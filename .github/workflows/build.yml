@@ -24,6 +24,9 @@ jobs:
         ar = "x86_64-w64-mingw32-ar"
         EOF
             ;;
+          x86_64-unknown-linux-musl )
+            sudo apt install musl-dev
+            ;;
         esac
     - uses: actions-rs/toolchain@v1
       with:
