@@ -1,0 +1,40 @@
+name: build
+
+on: push
+
+jobs:
+  build:
+    runs-on: "ubuntu-20.04"
+    strategy:
+      matrix:
+        target:
+          - x86_64-unknown-linux-gnu
+          - x86_64-unknown-linux-musl
+          - x86_64-pc-windows-gnu
+    steps:
+    - uses: actions/checkout@v2
+    - name: install toolchain
+      run: |
+        case "${{ matrix.target }}" in
+          x86_64-pc-windows-gnu )
+            sudo apt install g++-mingw-w64
+            cat << EOF > ~/.cargo/config
+        [target.${{ matrix.target }}]
+        linker = "x86_64-w64-mingw32-gcc"
+        ar = "x86_64-w64-mingw32-ar"
+        EOF
+            ;;
+        esac
+    - uses: actions-rs/toolchain@v1
+      with:
+          toolchain: ${{ matrix.toolchain }}
+          target: stable
+          override: true
+          profile: minimal
+    - name: build
+      uses: actions-rs/cargo@v1
+      with:
+        command: build
+        args: --release --target ${{ matrix.target }}
+
+# vim: set ts=2 sts=2 sw=2:
