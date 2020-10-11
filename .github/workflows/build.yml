@@ -43,5 +43,5 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.target }}
-        path: ${{ github.workspace }}/target/*/pwl*
+        path: ${{ github.workspace }}/target/*/release/pwl*
 # vim: set ts=2 sts=2 sw=2:
