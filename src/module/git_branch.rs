@@ -3,6 +3,9 @@ use super::*;
 
 pub fn render(env: &Environment) -> anyhow::Result<Option<Segment>> {
     if let Some(repo) = &env.repo {
+        if repo.head_detached()? {
+            return Ok(Some(Segment::builder(Color::GitBranch, format!("{}", "?")).build()))
+        }
         let name = match repo.head() {
             Ok(head) => if let Some(name) = head.shorthand() {
                 name.to_owned()

@@ -4,6 +4,9 @@ use super::*;
 
 pub fn render(env: &Environment) -> anyhow::Result<Option<Segment>> {
     if let Some(repo) = &env.repo {
+        if repo.head_detached()? {
+            return Ok(None);
+        }
         let head = match repo.head() {
             Ok(head) => head,
             Err(err) if err.code() == ErrorCode::UnbornBranch => return Ok(None),
