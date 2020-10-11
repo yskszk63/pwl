@@ -27,8 +27,8 @@ jobs:
         esac
     - uses: actions-rs/toolchain@v1
       with:
-          toolchain: ${{ matrix.toolchain }}
-          target: stable
+          toolchain: stable
+          target: ${{ matrix.target }}
           override: true
           profile: minimal
     - name: build
