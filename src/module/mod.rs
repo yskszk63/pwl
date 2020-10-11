@@ -3,19 +3,19 @@ use std::path::PathBuf;
 
 use git2::Repository;
 
-use crate::Segment;
 use crate::Color;
+use crate::Segment;
 use git_util::{summarize as summarize_git, Summary as GitSummary};
 
 mod cwd;
-mod root;
-mod git_branch;
 mod git_ahead_behind;
-mod git_util;
-mod git_staged;
-mod git_not_staged;
-mod git_untracked;
+mod git_branch;
 mod git_conflicted;
+mod git_not_staged;
+mod git_staged;
+mod git_untracked;
+mod git_util;
+mod root;
 
 pub struct Environment {
     exit_code: i32,
@@ -32,12 +32,17 @@ impl Environment {
         } else {
             None
         };
-        Self {exit_code, cwd, repo, summary: None}
+        Self {
+            exit_code,
+            cwd,
+            repo,
+            summary: None,
+        }
     }
 
     fn summarize_git(&mut self) -> Option<&GitSummary> {
         if self.summary.is_some() {
-            return self.summary.as_ref()
+            return self.summary.as_ref();
         }
 
         let summary = if let Some(repo) = &self.repo {

@@ -1,11 +1,17 @@
 use std::io;
 
-pub struct BashPromptWrite<W> where W: io::Write {
+pub struct BashPromptWrite<W>
+where
+    W: io::Write,
+{
     io: W,
     enter_non_printing: bool,
 }
 
-impl<W> BashPromptWrite<W> where W: io::Write {
+impl<W> BashPromptWrite<W>
+where
+    W: io::Write,
+{
     pub fn new(io: W) -> Self {
         Self {
             io,
@@ -53,9 +59,11 @@ impl<W> BashPromptWrite<W> where W: io::Write {
     }
 }
 
-impl<W> Drop for BashPromptWrite<W> where W: io::Write {
+impl<W> Drop for BashPromptWrite<W>
+where
+    W: io::Write,
+{
     fn drop(&mut self) {
         self.ensure_exit_non_printing().ok();
     }
 }
-

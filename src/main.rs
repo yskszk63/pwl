@@ -1,16 +1,16 @@
-use std::io;
 use std::env;
+use std::io;
 
-pub use segment::Segment;
 pub use color::Color;
 use module::{Environment, Module};
-use theme::Theme;
 use prompt::BashPromptWrite;
+pub use segment::Segment;
+use theme::Theme;
 
-mod segment;
 mod color;
-mod prompt;
 mod module;
+mod prompt;
+mod segment;
 mod theme;
 
 fn main() -> anyhow::Result<()> {

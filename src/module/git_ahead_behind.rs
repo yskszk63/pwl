@@ -1,6 +1,6 @@
+use super::*;
 use crate::segment::Group;
 use git2::{BranchType, ErrorCode};
-use super::*;
 
 pub fn render(env: &Environment) -> anyhow::Result<Option<Segment>> {
     if let Some(repo) = &env.repo {
@@ -26,7 +26,11 @@ pub fn render(env: &Environment) -> anyhow::Result<Option<Segment>> {
                         _ => None,
                     };
                     if let Some(sym) = sym {
-                        return Ok(Some(Segment::builder(Color::GitAheadBehind, sym).group(Group::GitStatus).build()))
+                        return Ok(Some(
+                            Segment::builder(Color::GitAheadBehind, sym)
+                                .group(Group::GitStatus)
+                                .build(),
+                        ));
                     }
                 }
             }
