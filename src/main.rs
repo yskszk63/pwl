@@ -19,10 +19,6 @@ fn main() -> anyhow::Result<()> {
         Module::Cwd,
         Module::GitBranch,
         Module::GitAheadBehind,
-        Module::GitStaged,
-        Module::GitNotStaged,
-        Module::GitUntracked,
-        Module::GitConflicted,
         Module::Root,
     ];
     let theme = Theme::Light;
@@ -40,13 +36,17 @@ fn main() -> anyhow::Result<()> {
                 if let Some((_, previous)) = previous {
                     prompt.write_fg(previous)?;
                     prompt.write_bg(bg)?;
-                    prompt.write_text("")?;
+                    prompt.write_text("")?;
                 }
             }
 
             prompt.write_fg(fg)?;
             prompt.write_bg(bg)?;
-            prompt.write_text(&format!(" {} ", segment.text()))?;
+            if previous.is_some() {
+                prompt.write_text(&format!("{} ", segment.text()))?;
+            } else {
+                prompt.write_text(&format!(" {} ", segment.text()))?;
+            }
 
             previous = Some((fg, bg));
             previous_group = segment.group().cloned();

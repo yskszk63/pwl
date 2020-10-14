@@ -19,10 +19,7 @@ fn resolve_light(color: &Color) -> (u8, u8) {
         Color::CmdSuccess => (15, 2),
         Color::CmdFailure => (15, 1),
         Color::GitBranch => (1, 15),
+        Color::GitBranchDirty => (15, 130),
         Color::GitAheadBehind => (250, 240),
-        Color::GitStaged => (15, 22),
-        Color::GitNotStaged => (15, 130),
-        Color::GitUntracked => (15, 52),
-        Color::GitConflicted => (15, 9),
     }
 }

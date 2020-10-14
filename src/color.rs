@@ -4,9 +4,6 @@ pub enum Color {
     CmdSuccess,
     CmdFailure,
     GitBranch,
+    GitBranchDirty,
     GitAheadBehind,
-    GitStaged,
-    GitNotStaged,
-    GitUntracked,
-    GitConflicted,
 }

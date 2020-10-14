@@ -10,10 +10,6 @@ use git_util::{summarize as summarize_git, Summary as GitSummary};
 mod cwd;
 mod git_ahead_behind;
 mod git_branch;
-mod git_conflicted;
-mod git_not_staged;
-mod git_staged;
-mod git_untracked;
 mod git_util;
 mod root;
 
@@ -59,10 +55,6 @@ pub enum Module {
     Cwd,
     GitBranch,
     GitAheadBehind,
-    GitStaged,
-    GitNotStaged,
-    GitUntracked,
-    GitConflicted,
     Root,
 }
 
@@ -72,10 +64,6 @@ impl Module {
             Self::Cwd => cwd::render(env)?,
             Self::GitBranch => git_branch::render(env)?,
             Self::GitAheadBehind => git_ahead_behind::render(env)?,
-            Self::GitStaged => git_staged::render(env)?,
-            Self::GitNotStaged => git_not_staged::render(env)?,
-            Self::GitUntracked => git_untracked::render(env)?,
-            Self::GitConflicted => git_conflicted::render(env)?,
             Self::Root => root::render(env)?,
         };
         Ok(segment)
