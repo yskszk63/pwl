@@ -50,4 +50,14 @@ jobs:
       with:
         name: ${{ matrix.target }}
         path: ${{ github.workspace }}/target/*/release/pwl*
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-20.04
+    #if: contains(github.ref, 'tags/v')
+    steps:
+      - uses: actions/download-artifact@v2
+      - run: echo ${{ github.ref }}
+      - run: ls -R
+
 # vim: set ts=2 sts=2 sw=2:
