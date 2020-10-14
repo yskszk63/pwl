@@ -58,6 +58,41 @@ jobs:
     steps:
       - uses: actions/download-artifact@v2
       - run: echo ${{ github.ref }}
-      - run: ls -R
+      - run: find . -type f
+      - id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          release_name: Release ${{ github.ref }}
+          draft: true
+          #prerelease: false
+
+      - uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./x86_64-pc-windows-gnu/x86_64-pc-windows-gnu/release/pwl.exe
+          asset_name: x86_64-pc-windows-gnu-pwl.exe
+          asset_content_type: application/octet-stream
+
+      - uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./x86_64-pc-windows-msvc/x86_64-pc-windows-msvc/release/pwl.exe
+          asset_name: x86_64-pc-windows-msvc-pwl.exe
+          asset_content_type: application/octet-stream
+
+      - uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./x86_64-unknown-linux-musl/x86_64-unknown-linux-musl/release
+          asset_name: x86_64-unknown-linux-musl-pwl
+          asset_content_type: application/octet-stream
 
 # vim: set ts=2 sts=2 sw=2:
