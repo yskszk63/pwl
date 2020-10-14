@@ -54,7 +54,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-20.04
-    #if: contains(github.ref, 'tags/v')
+    if: contains(github.ref, 'tags/v')
     steps:
       - uses: actions/download-artifact@v2
       - run: echo ${{ github.ref }}
@@ -65,10 +65,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v0.0.0-test1
+          tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
           draft: true
-          #prerelease: false
 
       - uses: actions/upload-release-asset@v1
         env:
@@ -93,7 +92,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./x86_64-unknown-linux-musl/x86_64-unknown-linux-musl/release
+          asset_path: ./x86_64-unknown-linux-musl/x86_64-unknown-linux-musl/release/pwl
           asset_name: x86_64-unknown-linux-musl-pwl
           asset_content_type: application/octet-stream
 
