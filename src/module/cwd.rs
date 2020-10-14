@@ -1,4 +1,4 @@
-use std::path::Path;
+use std::path::{Path, MAIN_SEPARATOR};
 
 use super::*;
 
@@ -38,7 +38,14 @@ pub fn render(env: &Environment) -> anyhow::Result<Option<Segment>> {
         if let Some(wd) = workdir(&env) {
             if let Some(relative) = relative_repo_path(&cwd, &wd) {
                 return Ok(Some(
-                    Segment::builder(Color::Cwd, relative.display()).build(),
+                    Segment::builder(
+                        Color::Cwd,
+                        relative
+                            .display()
+                            .to_string()
+                            .replace(MAIN_SEPARATOR, "\u{e0bb}"),
+                    )
+                    .build(),
                 ));
             }
         }
