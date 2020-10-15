@@ -12,12 +12,7 @@ fn workdir(env: &Environment) -> Option<&Path> {
 }
 
 fn relative_repo_path<'a>(cwd: &'a Path, wd: &Path) -> Option<&'a Path> {
-    let parent = if let Some(parent) = wd.parent() {
-        parent
-    } else {
-        return None;
-    };
-
+    let parent = wd.parent()?;
     cwd.strip_prefix(parent).ok()
 }
 

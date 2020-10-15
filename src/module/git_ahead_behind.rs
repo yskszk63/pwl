@@ -10,7 +10,7 @@ pub fn render(env: &Environment) -> anyhow::Result<Option<Segment>> {
         let head = match repo.head() {
             Ok(head) => head,
             Err(err) if err.code() == ErrorCode::UnbornBranch => return Ok(None),
-            Err(err) => Err(err)?,
+            Err(err) => return Err(err.into()),
         };
         let local = head.target();
         let name = head.shorthand();
