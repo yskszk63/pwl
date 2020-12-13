@@ -20,9 +20,9 @@ pub fn render(env: &Environment) -> anyhow::Result<Option<Segment>> {
                 if let Some(upstream) = upstream.get().target() {
                     let (ahead, behind) = repo.graph_ahead_behind(local, upstream)?;
                     let sym = match (ahead, behind) {
-                        (ahead, behind) if ahead > 0 && behind > 0 => Some("\u{fc90}\u{fc93}"),
-                        (ahead, _) if ahead > 0 => Some("\u{fc93}"),
-                        (_, behind) if behind > 0 => Some("\u{fc90}"),
+                        (ahead, behind) if ahead > 0 && behind > 0 => Some("\u{21e3}\u{21e1}"),
+                        (ahead, _) if ahead > 0 => Some("\u{21e1}"),
+                        (_, behind) if behind > 0 => Some("\u{21e3}"),
                         _ => None,
                     };
                     if let Some(sym) = sym {
