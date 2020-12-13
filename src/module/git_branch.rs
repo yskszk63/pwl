@@ -17,10 +17,10 @@ pub fn render(env: &mut Environment) -> anyhow::Result<Option<Segment>> {
             Err(err) => return Err(err.into()),
         };
         let summary = env.summarize_git();
-        let staged = summary.filter(|s| s.staged() > 0).map(|_| "\u{f067}");
-        let notstaged = summary.filter(|s| s.notstaged() > 0).map(|_| "\u{f444}");
-        let untracked = summary.filter(|s| s.untracked() > 0).map(|_| "\u{f128}");
-        let conflicted = summary.filter(|s| s.conflicted() > 0).map(|_| "\u{f069}");
+        let staged = summary.filter(|s| s.staged() > 0).map(|_| "\u{f457}");
+        let notstaged = summary.filter(|s| s.notstaged() > 0).map(|_| "\u{f459}");
+        let untracked = summary.filter(|s| s.untracked() > 0).map(|_| "\u{f475}");
+        let conflicted = summary.filter(|s| s.conflicted() > 0).map(|_| "\u{f421}");
 
         let color = match (staged, notstaged, untracked, conflicted) {
             (None, None, None, None) => Color::GitBranch,
